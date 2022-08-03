@@ -1,14 +1,31 @@
-let http = require("http");
+let express = require("express");
+let App = express();
 
-let App = http.createServer(function (req, res) {
-  if (req.url == "/") {
-    res.end("response.");
-  }
+// allow express to translate use input (name)
+App.use(express.urlencoded({ extended: false }));
 
-  if (req.url == "/about") {
-    res.end("about.");
+// first arg is home page
+App.get("/", function (req, res) {
+  res.send(`
+  <form action="/anser" method="post">
+    <p>color</p>
+    <input name="color">
+    <button>submit</button>
+  </form>
+  `);
+});
+
+App.post("/anser", function (req, res) {
+  if (req.body.color == "a") {
+    res.send(`
+    <p>duhhhhh!</p>
+    <a href="/">back</a>
+    `);
   } else {
-    res.end("nothing");
+    res.send(`
+    <p>nahhh!</p>
+    <a href="/">back</a>
+    `);
   }
 });
 App.listen(3000);
