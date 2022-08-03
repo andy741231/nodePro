@@ -5,6 +5,7 @@ node -v
 ### start node server
 
 node <filename>
+pwd
 
 ### stop node server
 
