@@ -1,1 +1,1 @@
-mongodb://root:root@localhost:27017/YourDBNameHere?&authSource=admin
+mongodb://root:root@localhost:27017/JustATest?&authSource=admin
