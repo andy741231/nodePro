@@ -82,7 +82,7 @@ App.get("/", function (req, res) {
             ${items
               .map(function (item) {
                 return `
-                <li class="list-group-item d-flex justify-content-between">${item.text}
+                <li class="list-group-item d-flex justify-content-between"><span class="item-text">${item.text}</span>
                   <div class="col-3">
                     <button class="btn btn-success edit" data-id="${item._id}">Edit</button><button class="btn btn-danger ms-3">Delete</button>
                   </div>
