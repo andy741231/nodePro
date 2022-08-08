@@ -46,6 +46,17 @@ App.use(express.urlencoded({ extended: false }));
 // tells express to takes form data and added to body object which is in req object
 App.use(express.json());
 
+//password protected
+App.use(password)
+
+function password(req, res, next) {
+  res.set('WWW-Authenticate', 'Basic realm="simple"')
+  if(req.headers.authorization == "Basic YW5keToxMjMx"){
+    next()
+  }else{
+    res.status(401).send("no")
+  }
+}
 // first arg is home page
 App.get("/", function (req, res) {
   //read db
@@ -68,7 +79,7 @@ App.get("/", function (req, res) {
           <h3>To Do List</h3>
 
           <div class="my-5 card p-3" style="background-color: #f2f2f2;">
-            <form id="form" action="/create" method="POST" class="row g-3">
+            <form id="form" action="/create-item" method="POST" class="row g-3">
                 <div class="col-10">
                   <input class="form-control" autofocus name="item" id="input" autocomplete="off"></input>
                 </div>
@@ -78,13 +89,13 @@ App.get("/", function (req, res) {
             </form>
           </div>
           <div class="">
-            <ul id="list" class="list-group">
+            <ul id="list" class="list-group mb-5">
             ${items
               .map(function (item) {
                 return `
                 <li class="list-group-item d-flex justify-content-between"><span class="item-text">${item.text}</span>
                   <div class="col-3">
-                    <button class="btn btn-success edit" data-id="${item._id}">Edit</button><button class="btn btn-danger ms-3">Delete</button>
+                    <button class="btn btn-success edit" data-id="${item._id}">Edit</button><button data-id="${item._id}" class="btn btn-danger ms-3 delete">Delete</button>
                   </div>
                 </li>                      
               `;
@@ -104,10 +115,10 @@ App.get("/", function (req, res) {
     });
 });
 
-App.post("/create", function (req, res) {
+App.post("/create-item", function (req, res) {
   //create data
-  db.collection("items").insertOne({ text: req.body.item }, function () {
-    res.redirect("/");
+  db.collection("items").insertOne({ text: req.body.text }, function (err, info) {
+    res.json({_id: info.insertedId, text: req.body.text})
   });
 });
 
@@ -119,3 +130,10 @@ App.post("/update-item", function (req, res) {
     function () {}
   );
 });
+
+App.post("/delete-item", function(req, res) {
+  db.collection("items").deleteOne(
+    {_id: new ObjectId(req.body.id)},
+    res.send("success")
+  )
+})
